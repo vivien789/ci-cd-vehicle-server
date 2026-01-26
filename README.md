@@ -42,7 +42,9 @@ node createVehicle.js -p 8080 --id 12 --sc 'abcd' -b 16 --lng 70.060316 --lat 49
 mais voici les modules que j'ai installé :
 
 ``
-npm install -D husky lint-staged eslint prettier
+npm install -D husky lint-staged eslint prettier jtest
 
 npm run prepare
 ``
+
+[pour Jtest](https://www.acciyo.com/fr/comment-tester-efficacement-vos-applications-javascript-avec-jest-en-2025/)
