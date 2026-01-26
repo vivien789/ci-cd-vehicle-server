@@ -1,4 +1,5 @@
 # ci-cd-vehicle-server
+
 Cours de CI/CD par Ibrahima Fofana et Vivien Boucher
 
 ## Vehicle Server Typescript
@@ -29,3 +30,19 @@ node dist/index.js
 ```bash
 node createVehicle.js -p 8080 --id 12 --sc 'abcd' -b 16 --lng 70.060316 --lat 49.432044
 ```
+
+## Mes commentaires pour les éléments que j'ajoute
+
+### La partie Pre-commit
+
+1. Installation
+
+- [Husky](https://typicode.github.io/husky/get-started.html)
+
+mais voici les modules que j'ai installé :
+
+``
+npm install -D husky lint-staged eslint prettier
+
+npm run prepare
+``

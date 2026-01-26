@@ -1,0 +1,15 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Récupère la branche courante
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+# Liste des branches interdites
+protected_branches=("main" "master" "staging")
+
+for b in "${protected_branches[@]}"; do
+  if [ "$branch" = "$b" ]; then
+    echo "Push interdit sur la branche $branch"
+    exit 1
+  fi
+done
