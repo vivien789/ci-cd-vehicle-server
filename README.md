@@ -45,6 +45,8 @@ mais voici les modules que j'ai installé :
 npm install -D husky lint-staged eslint prettier jtest
 
 npm run prepare
+
+npm install express pg commander && npm install --save-dev typescript @types/node @types/express @types/pg
 ``
 
 [pour Jtest](https://www.acciyo.com/fr/comment-tester-efficacement-vos-applications-javascript-avec-jest-en-2025/)
