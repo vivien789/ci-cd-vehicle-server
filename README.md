@@ -48,3 +48,7 @@ npm run prepare
 ``
 
 [pour Jtest](https://www.acciyo.com/fr/comment-tester-efficacement-vos-applications-javascript-avec-jest-en-2025/)
+
+[Le Lien pour la ci github action node](https://docs.github.com/en/actions/tutorials/build-and-test-code/nodejs)
+[Pour la publication](https://docs.github.com/en/actions/tutorials/publish-packages/publish-nodejs-packages)
+[Pour la publication avec docker](https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images)

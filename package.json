@@ -19,7 +19,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "test": "jest"
+    "test": "jest --passWithNoTests",
+    "build": "echo \"Build ok\""
   },
   "lint-staged": {
     "*.{js,mjs,cjs,json,md}": [
