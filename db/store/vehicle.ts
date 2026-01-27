@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 import { Vehicle, Position } from '../model/vehicle';
-import { AppError, ErrorCode } from '../errors';
+import { AppError, ErrorCode } from '../server/errors';
 
 const findStatement = `
 SELECT id, shortcode, battery, ST_X(position) as long, ST_Y(position) as lat
