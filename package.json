@@ -26,10 +26,11 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "test": "jest --passWithNoTests",
-    "build": "rmdir /s /q dist 2>nul & tsc",
-    "start": "npx ts-node server/index.ts",
-    "start-db": "docker container run -d --name vehicle-database -e POSTGRES_USER=vehicle -e POSTGRES_PASSWORD=vehicle -e POSTGRES_DB=vehicle -p 5432:5432 postgis/postgis:16-3.4-alpine",
-    "stop-db": "docker container rm -f vehicle-database"
+    "build": "rm -rf ./dist && tsc",
+    "start": "npm run build && sleep 10 && node dist/server/index.js",
+    "start-db": "docker container run -d --name vehicle-database -e POSTGRES_USER=vehicle -e POSTGRES_PASSWORD=vehicle -e POSTGRES_DB=vehicle -p 5433:5432 postgis/postgis:16-3.4-alpine",
+    "stop-db": "docker container rm -f vehicle-database",
+    "clean-db": "docker rm -vf vehicle-database"
   },
   "lint-staged": {
     "*.{js,mjs,cjs,json,md}": [

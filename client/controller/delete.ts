@@ -1,4 +1,4 @@
-import { VehicleStore } from '../../db/store/vehicle';
+import { VehicleStore } from '../../db/store/vehicle.js';
 import { Request, Response } from 'express';
 
 interface Parameters {

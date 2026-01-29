@@ -1,5 +1,5 @@
-import { VehicleStore } from '../../db/store/vehicle';
-import { AppError, ErrorCode } from '../../server/errors';
+import { VehicleStore } from '../../db/store/vehicle.js';
+import { AppError, ErrorCode } from '../../server/errors.js';
 import { Request, Response } from 'express';
 
 interface CreateVehiclePayload {
