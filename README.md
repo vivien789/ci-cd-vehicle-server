@@ -54,3 +54,25 @@ npm install express pg commander && npm install --save-dev typescript @types/nod
 [Le Lien pour la ci github action node](https://docs.github.com/en/actions/tutorials/build-and-test-code/nodejs)
 [Pour la publication](https://docs.github.com/en/actions/tutorials/publish-packages/publish-nodejs-packages)
 [Pour la publication avec docker](https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images)
+
+ajout de bin dans le package.json et on lance npm link
+
+j'ai ajouté ça dans tsconfig.json pour éviter que typescript compile les fichiers non utiles
+`"include": [
+    "server/**/*",
+    "db/**/*",
+    "client/controller/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts"
+  ]`
+
+J’ai remplacé commonjs par ESNext dans le fichier tsconfig.json.
+Cela permet d’éviter le conflit entre CommonJS et ES Modules (exports is not defined) avec Node.js et "type": "module". (mais ça ne marchait toujours pas)
+
+Le problème venait d’un conflit de configuration : "type": "module" combiné avec module: "commonjs".
+j'ai retiré "type": "module" pour tout passer en CommonJS, et désormais le projet compile et s’exécute correctement.
+
+encore problème d'authentification pour la base de donnée

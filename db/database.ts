@@ -40,7 +40,8 @@ export async function connectDb(cfg: DBConfig): Promise<pg.Pool> {
     host: cfg.host,
     database: cfg.database,
     password: cfg.password,
-    port: cfg.port
+    port: cfg.port,
+    ssl: false
   });
 
   // Create the database. We should run migrations here,

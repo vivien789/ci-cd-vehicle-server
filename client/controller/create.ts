@@ -26,11 +26,13 @@ export class CreateVehicleController {
       shortcode: req.body.shortcode,
       battery: req.body.battery,
       position: {
-        latitude: req.body.longitude,
-        longitude: req.body.latitude,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
       },
     });
-
+    if (!vehicle) {
+      throw new AppError(ErrorCode.Unknown, "Vehicle creation failed", req.body);
+    }
     res.status(200).json({ vehicle: vehicle });
   }
 }
