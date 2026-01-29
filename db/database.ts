@@ -37,7 +37,6 @@ export function dbConfigFromEnv(): DBConfig {
 }
 
 export async function connectDb(cfg: DBConfig): Promise<pg.Pool> {
-  console.log(`Tentative de connexion avec : User=${cfg.user}, Pass=${cfg.password}, Port=${cfg.port}`);
   const pool = new Pool({
     user: cfg.user,
     host: cfg.host,
