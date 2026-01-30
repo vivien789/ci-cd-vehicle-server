@@ -2,6 +2,8 @@
 
 import { Command } from 'commander';
 import { createVehicleCommand } from './commands/createVehicle.js';
+import { listVehicleCommand } from './commands/listVehicles.js';
+import { deleteVehicleCommand } from './commands/deleteVehicle.js';
 
 const program = new Command();
 
@@ -16,5 +18,7 @@ program
 
 // Add subcommands
 program.addCommand(createVehicleCommand);
+program.addCommand(listVehicleCommand);
+program.addCommand(deleteVehicleCommand);
 
 program.parse();

@@ -23,15 +23,17 @@ class VehicleHttpClient {
     return JSON.parse(responseText);
   }
 
-  async listVehicles(params = {}) {
-    const url = new URL(`${this.baseUrl}/vehicles`);
-    Object.keys(params).forEach((key) => {
-      if (params[key] !== undefined) {
-        url.searchParams.append(key, params[key]);
-      }
-    });
+  async listVehicles() {
+    //const url = new URL(`${this.baseUrl}/vehicles`);
+    //Object.keys(params).forEach((key) => {
+    //  if (params[key] !== undefined) {
+    //    url.searchParams.append(key, params[key]);
+    //  }
+    //});
 
-    const response = await fetch(url);
+    const response = await fetch(`${this.baseUrl}/vehicles`, {
+      method: 'GET',
+    });
 
     if (!response.ok) {
       throw new Error('Failed to list vehicles');
