@@ -30,12 +30,12 @@ interface DBConfig {
 
 export function dbConfigFromEnv(): DBConfig {
   return {
-    user: (process.env.DB_USER ?? 'vehicle').trim(),
-    host: (process.env.DB_HOST ?? 'localhost').trim(),
-    database: (process.env.DB_DATABASE ?? 'vehicle').trim(),
-    password: (process.env.DB_PASSWORD ?? 'vehicle').trim(),
-    port: parseInt(process.env.DB_PORT ?? '5433', 10),
-  };
+    host: process.env.DB_HOST ?? 'localhost',
+    port: parseInt(process.env.DB_PORT ?? '5432'),
+    database: process.env.DB_DATABASE ?? 'vehicle',
+    user: process.env.DB_USER ?? 'vehicle',
+    password: process.env.DB_PASSWORD ?? 'vehicle',
+  }
 }
 
 export async function connectDb(cfg: DBConfig): Promise<Pool> {

@@ -87,3 +87,11 @@ ssl: {
 rejectUnauthorized: false
 }
 });
+
+c'est pour éviter ce message : ❌ ÉCHEC DE CONNEXION DB
+Détail: connection is insecure (try using `sslmode=require`)
+Something went wrong connection is insecure (try using `sslmode=require`)
+
+aussi comme on avait déjà mis le vehicle-cli dans le index.js même le fait qu'on a pas mis dans le package.json avec la clé bin, ça passe aussi
+la commande avec :
+vehicle-cli --address=localhost:8083 create-vehicle --shortcode=abce --battery=12 --longitude=20.0 --latitude=30.0

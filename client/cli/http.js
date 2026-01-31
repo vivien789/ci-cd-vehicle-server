@@ -13,8 +13,6 @@ class VehicleHttpClient {
     });
 
     const responseText = await response.text();
-    console.log('Response status:', response.status);
-    console.log('Response text:', responseText.substring(0, 200));
 
     if (!response.ok) {
       throw new Error(responseText || 'Failed to create vehicle');
@@ -23,15 +21,10 @@ class VehicleHttpClient {
     return JSON.parse(responseText);
   }
 
-  async listVehicles(params = {}) {
-    const url = new URL(`${this.baseUrl}/vehicles`);
-    Object.keys(params).forEach((key) => {
-      if (params[key] !== undefined) {
-        url.searchParams.append(key, params[key]);
-      }
+  async listVehicles() {
+    const response = await fetch(`${this.baseUrl}/vehicles`, {
+      method: 'GET',
     });
-
-    const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error('Failed to list vehicles');
@@ -46,10 +39,9 @@ class VehicleHttpClient {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to delete vehicle');
+      const errorText = await response.text();
+      throw new Error(`Failed to delete vehicle: ${errorText}`);
     }
-
-    return response;
   }
 }
 

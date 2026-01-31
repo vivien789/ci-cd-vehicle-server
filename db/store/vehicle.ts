@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
-import { Vehicle, Position } from '../model/vehicle';
-import { AppError, ErrorCode } from '../../server/errors';
+import { Vehicle, Position } from '../model/vehicle.js';
+import { AppError, ErrorCode } from '../../server/errors.js';
 
 const findStatement = `
 SELECT id, shortcode, battery, ST_X(position) as long, ST_Y(position) as lat
@@ -87,8 +87,8 @@ function newVehicleFromRow(vehicleRow: row): Vehicle {
     vehicleRow.shortcode,
     vehicleRow.battery,
     {
-      longitude: vehicleRow.lat,
-      latitude: vehicleRow.long
+      longitude: vehicleRow.long,
+      latitude: vehicleRow.lat
     },
   )
 }
