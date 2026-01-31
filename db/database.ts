@@ -1,15 +1,17 @@
-import pg from 'pg';
-
-const { Pool } = pg;
+// import pg from 'pg';
+//
+// const { Pool } = pg;
+// const { Pool } = require('pg');
+import { Pool } from 'pg';
 
 const createSchemaStatement = `
-CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE SCHEMA IF NOT EXISTS vehicle_server;
 CREATE TABLE IF NOT EXISTS vehicle_server.vehicles (
     id SERIAL PRIMARY KEY,
     shortcode TEXT NOT NULL,
     battery SMALLINT,
-    position GEOMETRY(POINT, 4326) NOT NULL
+    longitude DECIMAL(10, 8) NOT NULL,
+    latitude DECIMAL(11, 8) NOT NULL
 );
 `;
 
@@ -28,42 +30,50 @@ interface DBConfig {
 
 export function dbConfigFromEnv(): DBConfig {
   return {
-    host: process.env.DB_HOST ?? 'localhost',
-    port: parseInt(process.env.DB_PORT ?? '5432', 10),
-    database: process.env.DB_DATABASE ?? 'vehicle',
-    user: process.env.DB_USER ?? 'vehicle',
-    password: process.env.DB_PASSWORD ?? 'vehicle',
+    user: (process.env.DB_USER ?? 'vehicle').trim(),
+    host: (process.env.DB_HOST ?? 'localhost').trim(),
+    database: (process.env.DB_DATABASE ?? 'vehicle').trim(),
+    password: (process.env.DB_PASSWORD ?? 'vehicle').trim(),
+    port: parseInt(process.env.DB_PORT ?? '5433', 10),
   };
 }
 
-export async function connectDb(cfg: DBConfig): Promise<pg.Pool> {
+export async function connectDb(cfg: DBConfig): Promise<Pool> {
   const pool = new Pool({
-    user: cfg.user,
-    host: cfg.host,
-    database: cfg.database,
-    password: cfg.password,
-    port: cfg.port,
-    ssl: false,
-    max: 20,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    ...cfg,
+    ssl: {
+      rejectUnauthorized: false
+    }
   });
 
   try {
     const client = await pool.connect();
+    console.log("✅ Connexion à PostgreSQL réussie");
     client.release();
+
+    // On essaie de créer le schéma
     await createSchema(pool);
+    console.log("✅ Schéma vehicle_server prêt");
+
     return pool;
-  } catch (err) {
-    console.error("Database connection failed");
+  } catch (err: any) {
+    console.error("❌ ÉCHEC DE CONNEXION DB");
+    console.error(`Détail: ${err.message}`);
+
+    // Si c'est une erreur de permission sur l'extension
+    if (err.message.includes("permission denied to create extension")) {
+       console.warn("💡 Note: L'extension PostGIS est déjà gérée par Docker.");
+    }
+
+    await pool.end();
     throw err;
   }
 }
 
-export async function createSchema(pool: pg.Pool): Promise<void> {
+export async function createSchema(pool: Pool): Promise<void> {
   await pool.query(createSchemaStatement);
 }
 
-export async function dropSchema(pool: pg.Pool): Promise<void> {
+export async function dropSchema(pool: Pool): Promise<void> {
   await pool.query(deleteSchemaStatement);
 }

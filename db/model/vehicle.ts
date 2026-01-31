@@ -1,7 +1,7 @@
 export interface Position {
   latitude: number
   longitude: number
-};
+}
 
 export class Vehicle {
   constructor(

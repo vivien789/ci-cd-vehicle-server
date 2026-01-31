@@ -3,16 +3,17 @@ import { Vehicle, Position } from '../model/vehicle.js';
 import { AppError, ErrorCode } from '../../server/errors.js';
 
 const findStatement = `
-SELECT id, shortcode, battery, ST_X(position) as long, ST_Y(position) as lat
+SELECT id, shortcode, battery, longitude, latitude
 FROM vehicle_server.vehicles
-ORDER BY position <-> ST_MakePoint($1, $2)::geography ASC
+ORDER BY 
+  ABS(longitude - $1) + ABS(latitude - $2) ASC
 LIMIT $3;
 `
 
 const createStatement = `
-INSERT INTO vehicle_server.vehicles (shortcode, battery, position)
-VALUES ($1, $2, ST_MakePoint($3, $4))
-RETURNING id, shortcode, battery, ST_X(position) as long, ST_Y(position) as lat;
+INSERT INTO vehicle_server.vehicles (shortcode, battery, longitude, latitude)
+VALUES ($1, $2, $3, $4)
+RETURNING id, shortcode, battery, longitude, latitude;
 `
 
 const deleteStatement = `
@@ -38,8 +39,8 @@ interface row {
   id: number;
   shortcode: string;
   battery: number;
-  long: number;
-  lat: number;
+  longitude: number;
+  latitude: number;
 }
 
 export class VehicleStore {
@@ -87,8 +88,8 @@ function newVehicleFromRow(vehicleRow: row): Vehicle {
     vehicleRow.shortcode,
     vehicleRow.battery,
     {
-      longitude: vehicleRow.long,
-      latitude: vehicleRow.lat
+      longitude: vehicleRow.longitude,
+      latitude: vehicleRow.latitude
     },
   )
 }

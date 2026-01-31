@@ -76,3 +76,7 @@ Le problème venait d’un conflit de configuration : "type": "module" combiné 
 j'ai retiré "type": "module" pour tout passer en CommonJS, et désormais le projet compile et s’exécute correctement.
 
 encore problème d'authentification pour la base de donnée
+
+c'est avec la base de donnée neon.tech que ma connexion passe :
+
+j'ai ajouté aussi "ts-node": "^10.9.2" quand j'avais assez de problèmes avec commonjs et type : module
