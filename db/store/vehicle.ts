@@ -1,19 +1,18 @@
 import { Pool } from 'pg';
-import { Vehicle, Position } from '../model/vehicle.js';
-import { AppError, ErrorCode } from '../../server/errors.js';
+import { Vehicle, Position } from '../model/vehicle';
+import { AppError, ErrorCode } from '../../server/errors';
 
 const findStatement = `
-SELECT id, shortcode, battery, longitude, latitude
+SELECT id, shortcode, battery, ST_X(position) as long, ST_Y(position) as lat
 FROM vehicle_server.vehicles
-ORDER BY 
-  ABS(longitude - $1) + ABS(latitude - $2) ASC
+ORDER BY position <-> ST_MakePoint($1, $2)::geography ASC
 LIMIT $3;
 `
 
 const createStatement = `
-INSERT INTO vehicle_server.vehicles (shortcode, battery, longitude, latitude)
-VALUES ($1, $2, $3, $4)
-RETURNING id, shortcode, battery, longitude, latitude;
+INSERT INTO vehicle_server.vehicles (shortcode, battery, position)
+VALUES ($1, $2, ST_MakePoint($3, $4))
+RETURNING id, shortcode, battery, ST_X(position) as long, ST_Y(position) as lat;
 `
 
 const deleteStatement = `
@@ -39,8 +38,8 @@ interface row {
   id: number;
   shortcode: string;
   battery: number;
-  longitude: number;
-  latitude: number;
+  long: number;
+  lat: number;
 }
 
 export class VehicleStore {
@@ -56,7 +55,7 @@ export class VehicleStore {
       throw new Error("unexpected amount of rows returned");
     }
 
-     
+
     const vehicleRow :row = result.rows[0];
 
     return newVehicleFromRow(vehicleRow);
@@ -88,8 +87,8 @@ function newVehicleFromRow(vehicleRow: row): Vehicle {
     vehicleRow.shortcode,
     vehicleRow.battery,
     {
-      longitude: vehicleRow.longitude,
-      latitude: vehicleRow.latitude
+      longitude: vehicleRow.lat,
+      latitude: vehicleRow.long
     },
   )
 }

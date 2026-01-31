@@ -5,15 +5,15 @@
 import { Pool } from 'pg';
 
 const createSchemaStatement = `
+CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE SCHEMA IF NOT EXISTS vehicle_server;
 CREATE TABLE IF NOT EXISTS vehicle_server.vehicles (
-    id SERIAL PRIMARY KEY,
-    shortcode TEXT NOT NULL,
-    battery SMALLINT,
-    longitude DECIMAL(10, 8) NOT NULL,
-    latitude DECIMAL(11, 8) NOT NULL
+	id SERIAL PRIMARY KEY,
+	shortcode TEXT NOT NULL,
+	battery SMALLINT,
+	position GEOMETRY(POINT, 4326) not null
 );
-`;
+`
 
 const deleteSchemaStatement = `
 DROP TABLE IF EXISTS vehicle_server.vehicles;

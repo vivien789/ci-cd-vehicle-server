@@ -80,3 +80,10 @@ encore problème d'authentification pour la base de donnée
 c'est avec la base de donnée neon.tech que ma connexion passe :
 
 j'ai ajouté aussi "ts-node": "^10.9.2" quand j'avais assez de problèmes avec commonjs et type : module
+
+j'ai ajouté la partie ssl comme neon.tech dans le fichier datase.ts: const pool = new Pool({
+...cfg,
+ssl: {
+rejectUnauthorized: false
+}
+});
