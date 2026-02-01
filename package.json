@@ -33,6 +33,9 @@
     "stop-db": "docker container rm -f vehicle-database",
     "clean-db": "docker rm -vf vehicle-database"
   },
+  "bin": {
+    "vehicle-cli": "./dist/client/cli/index.js"
+  },
   "lint-staged": {
     "*.{js,mjs,cjs,json,md}": [
       "eslint --fix",

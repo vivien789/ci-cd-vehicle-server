@@ -1,7 +1,3 @@
-// import pg from 'pg';
-//
-// const { Pool } = pg;
-// const { Pool } = require('pg');
 import { Pool } from 'pg';
 
 const createSchemaStatement = `
@@ -46,28 +42,8 @@ export async function connectDb(cfg: DBConfig): Promise<Pool> {
     }
   });
 
-  try {
-    const client = await pool.connect();
-    console.log("✅ Connexion à PostgreSQL réussie");
-    client.release();
-
-    // On essaie de créer le schéma
-    await createSchema(pool);
-    console.log("✅ Schéma vehicle_server prêt");
-
-    return pool;
-  } catch (err: any) {
-    console.error("❌ ÉCHEC DE CONNEXION DB");
-    console.error(`Détail: ${err.message}`);
-
-    // Si c'est une erreur de permission sur l'extension
-    if (err.message.includes("permission denied to create extension")) {
-       console.warn("💡 Note: L'extension PostGIS est déjà gérée par Docker.");
-    }
-
-    await pool.end();
-    throw err;
-  }
+  await createSchema(pool);
+  return pool;
 }
 
 export async function createSchema(pool: Pool): Promise<void> {

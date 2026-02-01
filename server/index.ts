@@ -10,7 +10,6 @@ async function main() {
     port = parseInt(process.env.PORT, 10);
   }
   const db = await connectDb(dbConfigFromEnv());
-  console.log(db);
 
   setupApp(db as any).listen(port, () => {
     console.log(`Server is running on port ${port.toString()}`);
@@ -18,4 +17,3 @@ async function main() {
 }
 
 main().catch((e: unknown) => { console.error(`Something went wrong ${e as string}`); });
-
