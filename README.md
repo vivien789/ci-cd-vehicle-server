@@ -1,35 +1,64 @@
-# ci-cd-vehicle-server
+# CI-CD-vehicle-server
 
-Cours de CI/CD par Ibrahima Fofana et Vivien Boucher
+CI/CD class by Ibrahima Fofana and Vivien Boucher
 
 ## Vehicle Server Typescript
 
 ### Requirements
 
 - nodejs
-- docker
+- .env file with this content:
+
+```bash
+DB_HOST=ep-polished-thunder-ahku11mw-pooler.c-3.us-east-1.aws.neon.tech
+DB_PORT=5432
+DB_DATABASE=neondb
+DB_USER=neondb_owner
+DB_PASSWORD=npg_FCBrzPfHAl89
+PORT=8083
+```
+
+### Install dependencies
+
+```bash
+npm ci
+```
+
+```bash
+npm link
+```
 
 ### Running the server
 
-First start a database server
+In another terminal start the server
 
 ```bash
-docker run -d -e POSTGRES_USER=vehicle -e POSTGRES_PASSWORD=vehicle -e POSTGRES_DB=vehicle -p 5432:5432 postgis/postgis:16-3.4-alpine
+npm start
 ```
 
-Then, in another terminal start the server
+## Commands
+
+### Create a vehicle
 
 ```bash
-node dist/index.js
+vehicle-cli --address=localhost:8083 create-vehicle --shortcode=abcd --battery=12 --longitude=20.0 --latitude=30.0
 ```
 
-### Test plan
-
-#### Create a Vehicle
+### List all vehicles
 
 ```bash
-node createVehicle.js -p 8080 --id 12 --sc 'abcd' -b 16 --lng 70.060316 --lat 49.432044
+vehicle-cli --address=localhost:8083 list-vehicles
 ```
+
+### Delete a vehicle
+
+```bash
+vehicle-cli --address=localhost:8083 delete-vehicle --id=1
+```
+
+## Explore server
+
+Open your browser: Open http://localhost:8083/vehicles in your browser to see the server in action.
 
 ## Mes commentaires pour les éléments que j'ajoute
 
