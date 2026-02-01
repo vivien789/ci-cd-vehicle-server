@@ -1,10 +1,10 @@
 import express, { Express } from 'express';
 import { Pool } from 'pg';
-import { VehicleStore } from '../db/store/vehicle';
-import { FindVehiclesController } from '../client/controller/find'
-import { CreateVehicleController } from '../client/controller/create'
-import { DeleteVehicleController } from '../client/controller/delete'
-import { errorHandler } from './errors';
+import { VehicleStore } from '../db/store/vehicle.js';
+import { FindVehiclesController } from '../client/controller/find.js'
+import { CreateVehicleController } from '../client/controller/create.js'
+import { DeleteVehicleController } from '../client/controller/delete.js'
+import { errorHandler } from './errors.js';
 
 export function setupApp(db: Pool): Express {
   const app =  express();

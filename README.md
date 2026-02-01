@@ -54,3 +54,44 @@ npm install express pg commander && npm install --save-dev typescript @types/nod
 [Le Lien pour la ci github action node](https://docs.github.com/en/actions/tutorials/build-and-test-code/nodejs)
 [Pour la publication](https://docs.github.com/en/actions/tutorials/publish-packages/publish-nodejs-packages)
 [Pour la publication avec docker](https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images)
+
+ajout de bin dans le package.json et on lance npm link
+
+j'ai ajouté ça dans tsconfig.json pour éviter que typescript compile les fichiers non utiles
+`"include": [
+    "server/**/*",
+    "db/**/*",
+    "client/controller/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts"
+  ]`
+
+J’ai remplacé commonjs par ESNext dans le fichier tsconfig.json.
+Cela permet d’éviter le conflit entre CommonJS et ES Modules (exports is not defined) avec Node.js et "type": "module". (mais ça ne marchait toujours pas)
+
+Le problème venait d’un conflit de configuration : "type": "module" combiné avec module: "commonjs".
+j'ai retiré "type": "module" pour tout passer en CommonJS, et désormais le projet compile et s’exécute correctement.
+
+encore problème d'authentification pour la base de donnée
+
+c'est avec la base de donnée neon.tech que ma connexion passe :
+
+j'ai ajouté aussi "ts-node": "^10.9.2" quand j'avais assez de problèmes avec commonjs et type : module
+
+j'ai ajouté la partie ssl comme neon.tech dans le fichier datase.ts: const pool = new Pool({
+...cfg,
+ssl: {
+rejectUnauthorized: false
+}
+});
+
+c'est pour éviter ce message : ❌ ÉCHEC DE CONNEXION DB
+Détail: connection is insecure (try using `sslmode=require`)
+Something went wrong connection is insecure (try using `sslmode=require`)
+
+aussi comme on avait déjà mis le vehicle-cli dans le index.js même le fait qu'on a pas mis dans le package.json avec la clé bin, ça passe aussi
+la commande avec :
+vehicle-cli --address=localhost:8083 create-vehicle --shortcode=abce --battery=12 --longitude=20.0 --latitude=30.0

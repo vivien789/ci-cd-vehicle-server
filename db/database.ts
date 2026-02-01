@@ -1,4 +1,8 @@
-import * as pg from "pg";
+// import pg from 'pg';
+//
+// const { Pool } = pg;
+// const { Pool } = require('pg');
+import { Pool } from 'pg';
 
 const createSchemaStatement = `
 CREATE EXTENSION IF NOT EXISTS postgis;
@@ -14,14 +18,14 @@ CREATE TABLE IF NOT EXISTS vehicle_server.vehicles (
 const deleteSchemaStatement = `
 DROP TABLE IF EXISTS vehicle_server.vehicles;
 DROP SCHEMA IF EXISTS vehicle_server;
-`
+`;
 
 interface DBConfig {
-  user: string
-  host: string
-  database: string
-  password: string
-  port: number
+  user: string;
+  host: string;
+  database: string;
+  password: string;
+  port: number;
 }
 
 export function dbConfigFromEnv(): DBConfig {
@@ -34,25 +38,42 @@ export function dbConfigFromEnv(): DBConfig {
   }
 }
 
-export async function connectDb(cfg: DBConfig): Promise<pg.Pool> {
-  const pool = new pg.Pool({
-    user: cfg.user,
-    host: cfg.host,
-    database: cfg.database,
-    password: cfg.password,
-    port: cfg.port
+export async function connectDb(cfg: DBConfig): Promise<Pool> {
+  const pool = new Pool({
+    ...cfg,
+    ssl: {
+      rejectUnauthorized: false
+    }
   });
 
-  // Create the database. We should run migrations here,
-  await createSchema(pool);
+  try {
+    const client = await pool.connect();
+    console.log("✅ Connexion à PostgreSQL réussie");
+    client.release();
 
-  return pool;
+    // On essaie de créer le schéma
+    await createSchema(pool);
+    console.log("✅ Schéma vehicle_server prêt");
+
+    return pool;
+  } catch (err: any) {
+    console.error("❌ ÉCHEC DE CONNEXION DB");
+    console.error(`Détail: ${err.message}`);
+
+    // Si c'est une erreur de permission sur l'extension
+    if (err.message.includes("permission denied to create extension")) {
+       console.warn("💡 Note: L'extension PostGIS est déjà gérée par Docker.");
+    }
+
+    await pool.end();
+    throw err;
+  }
 }
 
-export async function createSchema(pool: pg.Pool) {
+export async function createSchema(pool: Pool): Promise<void> {
   await pool.query(createSchemaStatement);
 }
 
-export async function dropSchema(pool: pg.Pool) {
+export async function dropSchema(pool: Pool): Promise<void> {
   await pool.query(deleteSchemaStatement);
 }
