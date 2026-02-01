@@ -42,4 +42,4 @@ if (!err) {
 }
 
 //Test
-//node client/cli/createVehicle.js -p 8080 --id 12 --sc 'abcd' -b 16 --lng 70.060316 --lat 49.432044
+//node client/cli/commands/createVehicle.js -p 8080 --id 12 --sc 'abcd' -b 16 --lng 70.060316 --lat 49.432044
