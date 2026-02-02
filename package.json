@@ -3,28 +3,50 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@eslint/json": "^0.14.0",
     "@eslint/markdown": "^7.5.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.10",
+    "@types/pg": "^8.16.0",
     "eslint": "^9.39.2",
     "globals": "^17.1.0",
     "husky": "^9.1.7",
     "jest": "^30.2.0",
     "lint-staged": "^16.2.7",
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.1",
+    "ts-jest": "^29.4.6",
+    "typescript": "^5.9.3"
   },
   "scripts": {
     "prepare": "husky",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "test": "jest"
+    "test": "jest --passWithNoTests",
+    "build": "rm -rf ./dist && tsc",
+    "start": "npm run build && node dist/server/index.js",
+    "start-db": "docker container run -d --name vehicle-database -e POSTGRES_USER=vehicle -e POSTGRES_PASSWORD=vehicle -e POSTGRES_DB=vehicle -p 5433:5432 postgis/postgis:16-3.4-alpine",
+    "stop-db": "docker container rm -f vehicle-database",
+    "clean-db": "docker rm -vf vehicle-database"
+  },
+  "bin": {
+    "vehicle-cli": "./dist/client/cli/index.js"
   },
   "lint-staged": {
     "*.{js,mjs,cjs,json,md}": [
       "eslint --fix",
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "commander": "^14.0.2",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "pg": "^8.17.2",
+    "ts-node": "^10.9.2"
   }
 }
