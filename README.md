@@ -1,126 +1,139 @@
-# CI-CD-vehicle-server
+# CI/CD Vehicle Server
 
-CI/CD class by Ibrahima Fofana and Vivien Boucher
+Projet de CI/CD par Ibrahima Fofana et Vivien Boucher
 
-## Vehicle Server Typescript
+## Description
 
-### Requirements
+Ce projet est un serveur de gestion de véhicules développé en TypeScript avec Express.js. Il permet de créer, lister et supprimer des véhicules via une API REST et une interface CLI. La partie client (CLI) est développée en JavaScript avec npm pour la gestion des dépendances et Commander.js pour l'interface en ligne de commande.
 
-- nodejs
-- .env file with this content:
+## Organisation du projet
+
+Le projet est organisé de la manière suivante pour faciliter le travail collaboratif :
+
+- `server/` : Contient tous les fichiers relatifs au serveur (API, routes, logique métier)
+- `db/` : Contient les fichiers liés à la base de données
+- `client/` : Contient les fichiers clients, notamment l'interface CLI dans le dossier `cli/`
+
+Cette organisation permet de savoir rapidement où effectuer les modifications et de séparer clairement les responsabilités.
+
+## Base de données
+
+### Problèmes rencontrés et solution
+
+Lors du développement, nous avons rencontré des problèmes de connexion à la base de données PostgreSQL fonctionnant sous Docker. Malgré le fait que la base de données était fonctionnelle (nous pouvions y accéder via `docker exec`), nous avions des erreurs d'authentification dans notre code.
+
+Pour ne pas perdre de temps sur ces problèmes de configuration Docker et pouvoir avancer sur le projet, nous avons remplacé la base de données locale par une base de données gérée par **Neon.tech**. La connexion a immédiatement fonctionné avec cette solution.
+
+### Configuration de la base de données Neon.tech
+
+Pour que vous puissiez utiliser notre base de données Neon.tech, nous avons volontairement laissé le fichier `.env` dans l'historique du dépôt. Vous avez donc deux options :
+
+1. **Utiliser notre base de données** : Les informations de connexion sont déjà présentes dans le fichier `.env`
+2. **Créer votre propre base de données** : Créez un compte sur [Neon.tech](https://neon.tech), créez une base de données PostgreSQL, et ajoutez les informations de connexion dans le fichier `.env`
+
+## Installation et démarrage
+
+### Prérequis
+
+- Node.js
+- npm
+
+### Installation des dépendances
 
 ```bash
-DB_HOST=ep-polished-thunder-ahku11mw-pooler.c-3.us-east-1.aws.neon.tech
-DB_PORT=5432
-DB_DATABASE=neondb
-DB_USER=neondb_owner
-DB_PASSWORD=npg_FCBrzPfHAl89
-PORT=8083
+npm install
 ```
 
-### Install dependencies
+### Démarrage du serveur
 
-```bash
-npm ci
-```
+Contrairement à la version initiale qui utilisait Docker, il n'est plus nécessaire de lancer `npm run start-db` puisque nous utilisons Neon.tech.
 
-```bash
-npm link
-```
-
-### Running the server
-
-In another terminal start the server
+Pour lancer le serveur :
 
 ```bash
 npm start
 ```
 
-## Commands
+Cette commande va :
 
-### Create a vehicle
+1. Compiler le code TypeScript (`npm run build`)
+2. Lancer le serveur compilé (`node dist/server/index.js`)
+
+Le serveur sera accessible sur `localhost:8083` par défaut.
+
+## Utilisation de l'interface CLI
+
+Une fois le serveur lancé, ouvrez un autre terminal pour utiliser les commandes CLI.
+
+### Important : Installation de la CLI
+
+Si vous rencontrez des erreurs indiquant que `vehicle-cli` n'existe pas, n'oubliez pas de lancer :
+
+```bash
+npm link
+```
+
+### Commandes disponibles
+
+L'adresse par défaut est `localhost:8083`. Vous pouvez la spécifier avec l'option `--address` si nécessaire.
+
+#### Créer un véhicule
 
 ```bash
 vehicle-cli --address=localhost:8083 create-vehicle --shortcode=abcd --battery=12 --longitude=20.0 --latitude=30.0
 ```
 
-### List all vehicles
+Exemple de réponse :
+
+```text
+Created vehicule `abcd`, with ID `34`
+```
+
+#### Gestion des erreurs
+
+Le système valide les entrées et retourne des messages d'erreur clairs :
+
+```bash
+vehicle-cli --address=localhost:8083 create-vehicle --shortcode=abcdef --battery=12 --longitude=20.0 --latitude=30.0
+```
+
+Résultat :
+
+```text
+Could not create the vehicle
+- Shortcode must be only 4 charactes long
+```
+
+#### Lister les véhicules
 
 ```bash
 vehicle-cli --address=localhost:8083 list-vehicles
 ```
 
-### Delete a vehicle
+#### Supprimer un véhicule
 
 ```bash
-vehicle-cli --address=localhost:8083 delete-vehicle --id=1
+vehicle-cli --address=localhost:8083 delete-vehicle --id=valeurID
 ```
 
-## Explore server
+## Scripts disponibles
 
-Open your browser: Open http://localhost:8083/vehicles in your browser to see the server in action.
+- `npm start` : Compile et lance le serveur
+- `npm run build` : Compile le code TypeScript
+- `npm run lint` : Vérifie le code avec ESLint
+- `npm run lint:fix` : Corrige automatiquement les problèmes de linting
+- `npm run format` : Formate le code avec Prettier
+- `npm test` : Lance les tests
+- `npm run prepare` : Configure Husky pour les git hooks
 
-## Mes commentaires pour les éléments que j'ajoute
+## Développement
 
-### La partie Pre-commit
+Ce projet utilise :
 
-1. Installation
-
-- [Husky](https://typicode.github.io/husky/get-started.html)
-
-mais voici les modules que j'ai installé :
-
-``
-npm install -D husky lint-staged eslint prettier jtest
-
-npm run prepare
-
-npm install express pg commander && npm install --save-dev typescript @types/node @types/express @types/pg
-``
-
-[pour Jtest](https://www.acciyo.com/fr/comment-tester-efficacement-vos-applications-javascript-avec-jest-en-2025/)
-
-[Le Lien pour la ci github action node](https://docs.github.com/en/actions/tutorials/build-and-test-code/nodejs)
-[Pour la publication](https://docs.github.com/en/actions/tutorials/publish-packages/publish-nodejs-packages)
-[Pour la publication avec docker](https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images)
-
-ajout de bin dans le package.json et on lance npm link
-
-j'ai ajouté ça dans tsconfig.json pour éviter que typescript compile les fichiers non utiles
-`"include": [
-    "server/**/*",
-    "db/**/*",
-    "client/controller/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts"
-  ]`
-
-J’ai remplacé commonjs par ESNext dans le fichier tsconfig.json.
-Cela permet d’éviter le conflit entre CommonJS et ES Modules (exports is not defined) avec Node.js et "type": "module". (mais ça ne marchait toujours pas)
-
-Le problème venait d’un conflit de configuration : "type": "module" combiné avec module: "commonjs".
-j'ai retiré "type": "module" pour tout passer en CommonJS, et désormais le projet compile et s’exécute correctement.
-
-encore problème d'authentification pour la base de donnée
-
-c'est avec la base de donnée neon.tech que ma connexion passe :
-
-j'ai ajouté aussi "ts-node": "^10.9.2" quand j'avais assez de problèmes avec commonjs et type : module
-
-j'ai ajouté la partie ssl comme neon.tech dans le fichier datase.ts: const pool = new Pool({
-...cfg,
-ssl: {
-rejectUnauthorized: false
-}
-});
-
-c'est pour éviter ce message : ❌ ÉCHEC DE CONNEXION DB
-Détail: connection is insecure (try using `sslmode=require`)
-Something went wrong connection is insecure (try using `sslmode=require`)
-
-aussi comme on avait déjà mis le vehicle-cli dans le index.js même le fait qu'on a pas mis dans le package.json avec la clé bin, ça passe aussi
-la commande avec :
-vehicle-cli --address=localhost:8083 create-vehicle --shortcode=abce --battery=12 --longitude=20.0 --latitude=30.0
+- TypeScript pour le typage statique
+- ESLint et Prettier pour la qualité du code
+- Husky pour les git hooks automatiques
+- Jest pour les tests
+- Express.js pour le serveur web
+- Commander.js pour l'interface CLI
+- Worflow github Action
